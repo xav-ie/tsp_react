@@ -1,7 +1,12 @@
 import React from "react";
+import Graph from "../components/Graph";
 
 const Home = () => {
-    return (<main>this is the home</main>);
+    return (
+    <main>
+        <Graph/>
+    </main>
+    );
 }
 
 export default Home;
