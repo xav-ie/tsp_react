@@ -1,4 +1,5 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is an experiment with TSP, SVG, and React...
+
 
 ## Available Scripts
 
