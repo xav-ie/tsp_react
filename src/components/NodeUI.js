@@ -1,6 +1,6 @@
 import React from "react";
 
-const Node = ({ x = 0, y = 0, r=30, text = "" }) => {
+const NodeUI = ({ x = 0, y = 0, r=30, text = "" }) => {
     return (
         <>
             <circle cx={x} cy={y} r={r} />
@@ -9,4 +9,4 @@ const Node = ({ x = 0, y = 0, r=30, text = "" }) => {
     )
 }
 
-export default Node;
+export default NodeUI;

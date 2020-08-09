@@ -3,8 +3,8 @@ class Arc {
   constructor(i, j) {
     this.i = i;
     this.j = j;
-    this.duration = round(dist(i.coord.x, i.coord.y, j.coord.x, j.coord.y)); // t_ij
-    this.cost = round(dist(i.coord.x, i.coord.y, j.coord.x, j.coord.y)); //c_ij
+    this.duration = Math.round(Math.dist(Math.createVector(i.coord.x, i.coord.y), Math.createVector(j.coord.x, j.coord.y))); // t_ij
+    this.cost = this.duration; //c_ij
     this.animate = 0;
   }
 
@@ -15,14 +15,16 @@ class Arc {
   }
 
   draw() {
-    
-    stroke(255, this.animate);
-    line(
-      this.i.coord.x * 10 + 50,
-      this.i.coord.y * 10 + 50,
-      this.j.coord.x * 10 + 50,
-      this.j.coord.y * 10 + 50
-    );
-    if(this.animate<254) this.animate+=2;
+    // stroke(255, this.animate);
+    // line(
+    //   this.i.coord.x * 10 + 50,
+    //   this.i.coord.y * 10 + 50,
+    //   this.j.coord.x * 10 + 50,
+    //   this.j.coord.y * 10 + 50
+    // );
+    // if(this.animate<254) this.animate+=2;
   }
 }
+
+
+export default Arc;

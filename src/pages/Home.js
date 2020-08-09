@@ -1,10 +1,10 @@
 import React from "react";
-import Graph from "../components/Graph";
+import GraphUI from "../components/GraphUI";
 
 const Home = () => {
     return (
     <main>
-        <Graph/>
+        <GraphUI/>
     </main>
     );
 }

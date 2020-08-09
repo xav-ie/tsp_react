@@ -2,7 +2,7 @@ class StateGraph {
     constructor(N, S = [], timeSoFar = 0, c = 0, arrivalTimes = []) {
         this.N = N; // all nodes Cities object
         this.S = S; // nodes visited so far, in order
-        if (this.S.length == 0) {
+        if (this.S.length === 0) {
             this.i = null;
         } else {
             this.i = this.S[this.S.length - 1]; // last visited node
@@ -13,19 +13,24 @@ class StateGraph {
     }
 
     getTravelTime(a, b) {
-        return this.N.distanceMatrix[a.cityNumber - 1][b.cityNumber - 1];
+        try {
+            return this.N.distanceMatrix[a.cityNumber - 1][b.cityNumber - 1];
+        } catch (error) {
+            console.warn("oops, something wrong with travel time");
+            return 0;
+        }
     }
 
     getGraph() {
         // detect if visited nodes empty, then this is first time
-        if (this.S.length == 0) {
+        if (this.S.length === 0) {
             // run equation 2
             //choose first node from G, we default to node id #1
             const startNode = this.N.cities[0];
             // append this node to visited nodes list
             this.S.push(startNode);
             // filter visited nodes out from N to get next nodes to visit
-            const nodesToVisit = this.N.cities.filter((n) => this.S.indexOf(n) == -1);
+            const nodesToVisit = this.N.cities.filter((n) => this.S.indexOf(n) === -1);
             // calculate minimum opening time
             const minimumOpen = this.N.cities.reduce(
                 (a, b) => (a.readyTime < b.readyTime) ? a : b
@@ -50,7 +55,7 @@ class StateGraph {
                     const penalty = (earliestPossibleArrival + colNum < j.readyTime) ? j.readyTime - (earliestPossibleArrival + colNum) : 0;
                     let cost = travelTime + penalty;
                     if ((colNum > j.dueDate) || (colNum < this.timeSoFar)) {
-                        cost = float("Infinity");
+                        cost = parseFloat("Infinity");
                     }
 
                     row[colNum] = cost;
@@ -75,7 +80,6 @@ class StateGraph {
             // if any node beats another in terms of both c and t, then filter it out
             for (let i = 0; i < statesList.length; i++) {
                 const currentState = statesList[i];
-                otherLoop:
                 for (let j = 0; j < statesList.length; j++) {
                     // if (i == j) continue;
                     const otherState = statesList[j];
@@ -88,19 +92,19 @@ class StateGraph {
                         // delete currentState
                         statesList.splice(i, 1);
                         i -= 1;
-                        break otherLoop;
+                        break;
                     }
                 }
             }
             // currentStateGraph = currentStateGraph.filter(state => true);
-            statesList = statesList.filter(state => !(state[3] == float("Infinity") || state[4] == float("Infinity") || isNaN(state[3]) || isNaN(state[4])));
+            statesList = statesList.filter(state => !(state[3] === parseFloat("Infinity") || state[4] === parseFloat("Infinity") || isNaN(state[3]) || isNaN(state[4])));
 
             this.statesList = statesList;
         } else {
             this.statesList = [];
             // last visited node
             const startNode = this.S[this.S.length - 1];
-            const nodesToVisit = this.N.cities.filter((n) => this.S.indexOf(n) == -1);
+            const nodesToVisit = this.N.cities.filter((n) => this.S.indexOf(n) === -1);
             // TODO: make calculating times more efficient!
             // calculate minimum opening time
             const minimumOpen = this.N.cities.reduce(
@@ -127,7 +131,7 @@ class StateGraph {
                     const penalty = (earliestPossibleArrival + colNum < j.readyTime) ? j.readyTime - (earliestPossibleArrival + colNum) : 0;
                     let cost = travelTime + penalty;
                     if ((colNum > j.dueDate) || (colNum < this.timeSoFar)) {
-                        cost = float("Infinity");
+                        cost = parseFloat("Infinity");
                     }
 
                     row[colNum] = cost;
@@ -151,7 +155,6 @@ class StateGraph {
             // if any node beats another in terms of both c and t, then filter it out
             for (let i = 0; i < statesList.length; i++) {
                 const currentState = statesList[i];
-                otherLoop:
                 for (let j = 0; j < statesList.length; j++) {
                     // if (i == j) continue;
                     const otherState = statesList[j];
@@ -164,14 +167,16 @@ class StateGraph {
                         // delete currentState
                         statesList.splice(i, 1);
                         i -= 1;
-                        break otherLoop;
+                        break;
                     }
                 }
             }
             // currentStateGraph = currentStateGraph.filter(state => true);
-            statesList = statesList.filter(state => !(state[3] == float("Infinity") || state[4] == float("Infinity") || isNaN(state[3]) || isNaN(state[4])));
+            statesList = statesList.filter(state => !(state[3] === parseFloat("Infinity") || state[4] === parseFloat("Infinity") || isNaN(state[3]) || isNaN(state[4])));
 
             this.statesList = statesList;
         }
     }
 }
+
+export default StateGraph;

@@ -1,3 +1,8 @@
+Math.createVector = (x, y) => ({ x: x, y: y });
+Math.dist = (u, v) => (Math.sqrt(Math.pow(u.x - v.x, 2) + Math.pow(u.y - v.y, 2)));
+
+
+
 let fileContents = `!! n20w20.001    16.75 391
 
 
@@ -46,6 +51,8 @@ class Utility {
     this.cityInfo = splitLines;
     return this.cityInfo;
   }
+  
+
 
   
 }
