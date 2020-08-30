@@ -7,26 +7,22 @@ import React from 'react';
  */
 const CityInfo = ({ graph, currentCityNumber }) => {
 	const currentCity = graph.N.cities[currentCityNumber - 1];
-	console.log('current city:', currentCity);
-
 	return (
-		<>
-			<div className="row">
-				<div className="col-xs-12">
-					<h2>Current city: {currentCityNumber}</h2>
-				</div>
-				<div className="col-xs-6">Coordinates:</div>
-				<div className="col-xs-6">{`(${currentCity.coord.x}, ${currentCity.coord.y})`}</div>
-				<div className="col-xs-6">Demand:</div>
-				<div className="col-xs-6">{currentCity.demand}</div>
-				<div className="col-xs-6">Due Date:</div>
-				<div className="col-xs-6">{currentCity.dueDate}</div>
-				<div className="col-xs-6">Ready Time:</div>
-				<div className="col-xs-6">{currentCity.readyTime}</div>
-				<div className="col-xs-6">Service Time:</div>
-				<div className="col-xs-6">{currentCity.serviceTime}</div>
+		<div className="row">
+			<div className="col-xs-12">
+				<h2>Current city: {currentCityNumber}</h2>
 			</div>
-		</>
+			<div className="col-xs-6">Coordinates:</div>
+			<div className="col-xs-6">{`(${currentCity.coord.x}, ${currentCity.coord.y})`}</div>
+			<div className="col-xs-6">Demand:</div>
+			<div className="col-xs-6">{currentCity.demand}</div>
+			<div className="col-xs-6">Due Date:</div>
+			<div className="col-xs-6">{currentCity.dueDate}</div>
+			<div className="col-xs-6">Ready Time:</div>
+			<div className="col-xs-6">{currentCity.readyTime}</div>
+			<div className="col-xs-6">Service Time:</div>
+			<div className="col-xs-6">{currentCity.serviceTime}</div>
+		</div>
 	);
 };
 
