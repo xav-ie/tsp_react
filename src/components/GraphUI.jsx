@@ -4,7 +4,8 @@ import ArcUI from './ArcUI';
 import ButtonUI from './ButtonUI';
 import NodeUI from './NodeUI';
 
-const GraphUI = () => {
+
+const GraphUI = ({setCurrentCityNumber, graph}) => {
 	const ZOOM_COEFF = 0.3;
 	const MOVE_COEFF = 20;
 	const DEFAULT_TRANSFORM = {
@@ -13,8 +14,7 @@ const GraphUI = () => {
 		zoomAmount: 0.08,
 	};
 	const [transformAmount, setTransformAmount] = useState(DEFAULT_TRANSFORM);
-	const [graph, setGraph] = useState(new Graph());
-
+	
 	useEffect(() => {
 		// console.log(graph.A.arcs);
 		return () => {};
@@ -64,10 +64,11 @@ const GraphUI = () => {
 
 			{graph.N.cities.map((city) => (
 				<NodeUI
-					key={city.cityNumber}
+					key={city.cityNumber + ' ' + city.coord.x + ' ' + city.coord.y}
 					x={city.coord.x}
 					y={city.coord.y}
 					text={city.cityNumber}
+					setCurrentCityNumber={setCurrentCityNumber}
 				/>
 			))}
 			<ButtonUI
