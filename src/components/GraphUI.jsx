@@ -1,24 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import Graph from '../old/Graph';
+import React, { useCallback } from 'react';
+import { animated, interpolate, useSpring } from 'react-spring';
 import ArcUI from './ArcUI';
 import ButtonUI from './ButtonUI';
 import NodeUI from './NodeUI';
 
-
-const GraphUI = ({setCurrentCityNumber, graph}) => {
+const GraphUI = ({ setCurrentCityNumber, graph }) => {
 	const ZOOM_COEFF = 0.3;
-	const MOVE_COEFF = 20;
+	const MOVE_COEFF = 150;
 	const DEFAULT_TRANSFORM = {
-		moveX: -15,
-		moveY: -15,
-		zoomAmount: 0.08,
+		moveX: 100,
+		moveY: 100,
+		zoomAmount: 16,
 	};
-	const [transformAmount, setTransformAmount] = useState(DEFAULT_TRANSFORM);
-	
-	useEffect(() => {
-		// console.log(graph.A.arcs);
-		return () => {};
-	});
+	const [transformAmount, setTransformAmount] = useSpring(
+		() => DEFAULT_TRANSFORM
+	);
 
 	const style = {
 		border: '3px solid black',
@@ -33,46 +29,56 @@ const GraphUI = ({setCurrentCityNumber, graph}) => {
 
 	const zoom = (amount) => {
 		setTransformAmount({
-			...transformAmount,
-			zoomAmount: transformAmount.zoomAmount * amount,
+			zoomAmount: transformAmount.zoomAmount.value * amount,
 		});
 	};
 	const move = ({ x = 0, y = 0 }) => {
 		setTransformAmount({
-			...transformAmount,
-			moveX: transformAmount.moveX + x,
-			moveY: transformAmount.moveY + y,
+			moveX: transformAmount.moveX.value + x,
+			moveY: transformAmount.moveY.value + y,
 		});
 	};
+
+	const onScroll = useCallback((e) => {
+		e.preventDefault();
+		console.log(e);
+		// return set({ st: e.target.scrollTop / 30 })
+	}, []);
+
 	return (
 		<svg
-			viewBox={`${0 + transformAmount.moveX} ${0 + transformAmount.moveY} ${
-				1000 * transformAmount.zoomAmount
-			} ${1000 * transformAmount.zoomAmount}`}
+			viewBox="0 0 1000 1000"
 			style={style}
 			xmlns="http://www.w3.org/2000/svg"
 			width="90px"
 			height="90px"
+			onScroll={onScroll}
 		>
-			{graph.A.arcs.map((arc) => (
-				<ArcUI
-					key={arc.i.cityNumber + ' ' + arc.j.cityNumber}
-					u={Math.createVector(arc.i.coord.x, arc.i.coord.y)}
-					v={Math.createVector(arc.j.coord.x, arc.j.coord.y)}
-				/>
-			))}
+			<animated.g
+				transform={interpolate(
+					[transformAmount.moveX, transformAmount.moveY, transformAmount.zoomAmount],
+					(mx, my, zA) => `translate(${mx} ${my}) scale(${zA})`
+				)}
+			>
+				{graph.A.arcs.map((arc) => (
+					<ArcUI
+						key={arc.i.cityNumber + ' ' + arc.j.cityNumber}
+						u={Math.createVector(arc.i.coord.x, arc.i.coord.y)}
+						v={Math.createVector(arc.j.coord.x, arc.j.coord.y)}
+					/>
+				))}
 
-			{graph.N.cities.map((city) => (
-				<NodeUI
-					key={city.cityNumber + ' ' + city.coord.x + ' ' + city.coord.y}
-					x={city.coord.x}
-					y={city.coord.y}
-					text={city.cityNumber}
-					setCurrentCityNumber={setCurrentCityNumber}
-				/>
-			))}
+				{graph.N.cities.map((city) => (
+					<NodeUI
+						key={city.cityNumber + ' ' + city.coord.x + ' ' + city.coord.y}
+						x={city.coord.x}
+						y={city.coord.y}
+						text={city.cityNumber}
+						setCurrentCityNumber={setCurrentCityNumber}
+					/>
+				))}
+			</animated.g>
 			<ButtonUI
-				transformAmount={transformAmount}
 				width="100"
 				height="50"
 				x="900"
@@ -82,29 +88,24 @@ const GraphUI = ({setCurrentCityNumber, graph}) => {
 				onClick={runButtonClicked}
 			/>
 			<ButtonUI
-				transformAmount={transformAmount}
 				width="50"
 				height="50"
 				x="950"
 				y="950"
 				background="#333"
 				text="+"
-				zoomCoeff={ZOOM_COEFF}
-				onClick={() => zoom(1 - ZOOM_COEFF)}
+				onClick={() => zoom(1 + ZOOM_COEFF)}
 			/>
 			<ButtonUI
-				transformAmount={transformAmount}
 				width="50"
 				height="50"
 				x="900"
 				y="950"
 				background="#333"
 				text="-"
-				zoomCoeff={ZOOM_COEFF}
-				onClick={() => zoom(1 + ZOOM_COEFF)}
+				onClick={() => zoom(1 - ZOOM_COEFF)}
 			/>
 			<ButtonUI
-				transformAmount={transformAmount}
 				width="50"
 				height="50"
 				x="900"
@@ -114,7 +115,6 @@ const GraphUI = ({setCurrentCityNumber, graph}) => {
 				onClick={() => move({ x: MOVE_COEFF })}
 			/>
 			<ButtonUI
-				transformAmount={transformAmount}
 				width="50"
 				height="50"
 				x="950"
@@ -124,7 +124,6 @@ const GraphUI = ({setCurrentCityNumber, graph}) => {
 				onClick={() => move({ x: -MOVE_COEFF })}
 			/>
 			<ButtonUI
-				transformAmount={transformAmount}
 				width="50"
 				height="50"
 				x="900"
@@ -134,7 +133,6 @@ const GraphUI = ({setCurrentCityNumber, graph}) => {
 				onClick={() => move({ y: MOVE_COEFF })}
 			/>
 			<ButtonUI
-				transformAmount={transformAmount}
 				width="50"
 				height="50"
 				x="950"
@@ -148,3 +146,8 @@ const GraphUI = ({setCurrentCityNumber, graph}) => {
 };
 
 export default GraphUI;
+
+// viewBox={`${transformAmount.moveX}
+// 		  ${transformAmount.moveY}
+// 		  ${1000 * transformAmount.zoomAmount}
+// 		  ${1000 * transformAmount.zoomAmount}`}
