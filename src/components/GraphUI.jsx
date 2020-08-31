@@ -1,5 +1,7 @@
-import React, { useCallback } from 'react';
+import clamp from 'lodash/clamp';
+import React from 'react';
 import { animated, interpolate, useSpring } from 'react-spring';
+import { useGesture } from 'react-use-gesture';
 import ArcUI from './ArcUI';
 import ButtonUI from './ButtonUI';
 import NodeUI from './NodeUI';
@@ -22,6 +24,7 @@ const GraphUI = ({ setCurrentCityNumber, graph }) => {
 		height: 'calc(100vw - 2em)',
 		maxHeight: 'calc(100vh - 50px - 2em)',
 		maxWidth: 'calc(100vh - 50px - 2em)',
+		touchAction: 'none',
 	};
 	const runButtonClicked = () => {
 		// graph.runManager();
@@ -39,26 +42,42 @@ const GraphUI = ({ setCurrentCityNumber, graph }) => {
 		});
 	};
 
-	const onScroll = useCallback((e) => {
-		e.preventDefault();
-		console.log(e);
-		// return set({ st: e.target.scrollTop / 30 })
-	}, []);
+	const bind = useGesture({
+		onDrag: ({ velocity, offset }) => {
+			velocity = clamp(velocity, 1, 8);
+			console.log('offset:', offset);
+
+			setTransformAmount(
+				{
+					moveX: offset[0],
+					moveY: offset[1],
+					config: { mass: velocity, tension: 550 * velocity, friction: 50 },
+				},
+				{
+					intitial: () => [100, 100],
+				}
+			);
+		},
+	});
 
 	return (
-		<svg
+		<animated.svg
 			viewBox="0 0 1000 1000"
 			style={style}
 			xmlns="http://www.w3.org/2000/svg"
 			width="90px"
 			height="90px"
-			onScroll={onScroll}
+			// {...bind()}
 		>
+			<rect x="0" y="0" width="1000" height="1000" fill="lightgray" {...bind()} />
+
 			<animated.g
-				transform={interpolate(
-					[transformAmount.moveX, transformAmount.moveY, transformAmount.zoomAmount],
-					(mx, my, zA) => `translate(${mx} ${my}) scale(${zA})`
-				)}
+				style={{
+					transform: interpolate(
+						[transformAmount.moveX, transformAmount.moveY, transformAmount.zoomAmount],
+						(mx, my, zA) => `translate(${mx}px, ${my}px) scale(${zA})`
+					),
+				}}
 			>
 				{graph.A.arcs.map((arc) => (
 					<ArcUI
@@ -141,7 +160,7 @@ const GraphUI = ({ setCurrentCityNumber, graph }) => {
 				text="down"
 				onClick={() => move({ y: -MOVE_COEFF })}
 			/>
-		</svg>
+		</animated.svg>
 	);
 };
 

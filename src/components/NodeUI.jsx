@@ -11,6 +11,7 @@ const Group = styled(animated.g)`
 	cursor: pointer;
 	transition: 0.2s ease-in-out fill;
 	user-select: none;
+	touch-action: none;
 `;
 
 const NodeUI = ({ x = 0, y = 0, r = 2, text = '', setCurrentCityNumber }) => {
